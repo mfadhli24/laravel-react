@@ -7,20 +7,32 @@ import InputError from "../Components/InputError";
 import PrimaryButton from "../Components/PrimaryButton";
 
 export default function CPanel() {
-    const { data, setData, post, processing, errors } = useForm({
+    const { data, setData, post, processing, errors, reset } = useForm({
         title: '',
         url: '',
         icon: '',
         order: '',
         is_active: false,
     });
-    
+
     const submit = (e) => {
         e.preventDefault();
-        console.log('Form dikirim:', data);
-        
-        // Sesuaikan nama route dengan milik Anda di routes/web.php
-        post(route('menu.create'));
+
+        // post(route('menu.store'), {
+        //     preserveScroll: true, // Mencegah halaman scroll ke atas sendiri
+        //     onSuccess: () => {
+        //         reset(); // Mengosongkan form otomatis setelah berhasil disimpan
+        //         alert('Menu berhasil ditambahkan!');
+        //     },
+        // });
+        // Opsi A: Gunakan URL path langsung (Paling Aman)
+        post('/menu', {
+            preserveScroll: true,
+            onSuccess: () => {
+                reset();
+                alert('Menu berhasil disimpan!');
+            },
+        });
     };
 
     return (
@@ -112,7 +124,7 @@ export default function CPanel() {
                                 </div>
 
                                 <div className="mt-6 flex items-center justify-end">
-                                    <PrimaryButton className="ms-4" disabled={processing}>
+                                    <PrimaryButton type="submit" className="ms-4" disabled={processing}>
                                         Tambah Menu
                                     </PrimaryButton>
                                 </div>

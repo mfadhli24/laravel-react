@@ -10,15 +10,15 @@ class Menu extends Model
     
     protected $fillable = ['parent_id', 'title', 'url', 'icon', 'order', 'is_active'];
 
-    // Relasi ke anak (children) - Rekursif
+    // Relasi ke Sub-menu (Children)
     public function children()
     {
-        return $this->hasMany(Menu::class, 'parent_id')->with('children')->orderBy('order', 'asc');
+        return $this->hasMany(Menu::class, 'parent_id')->orderBy('order', 'asc');
     }
 
-    // Scope untuk mengambil menu utama (tanpa parent)
-    public function scopeRoot($query)
+    // Relasi balik ke Menu Induk (Parent)
+    public function parent()
     {
-        return $query->whereNull('parent_id')->where('is_active', true)->orderBy('order', 'asc');
+        return $this->belongsTo(Menu::class, 'parent_id');
     }
 }

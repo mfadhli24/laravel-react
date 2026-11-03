@@ -37,6 +37,33 @@ export default function AuthenticatedLayout({ header, children }) {
 
     const toggleDarkMode = () => setDarkMode(!darkMode);
 
+    // Helper render icon FontAwesome / Text / Element untuk Mobile Nav
+    const renderMobileIcon = (icon) => {
+        if (!icon) {
+            return (
+                <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M4 6h16M4 12h16M4 18h16"
+                    />
+                </svg>
+            );
+        }
+
+        if (typeof icon === 'string' && icon.includes('fa-')) {
+            return <i className={`${icon} text-lg w-5 text-center`}></i>;
+        }
+
+        return <span className="text-lg leading-none">{icon}</span>;
+    };
+
     return (
         <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-200 flex flex-col lg:flex-row text-gray-800 dark:text-gray-200">
             {/* Backdrop Overlay untuk Mobile (Sidebar Slide View) */}
@@ -60,10 +87,10 @@ export default function AuthenticatedLayout({ header, children }) {
                             href="/"
                             className="flex items-center gap-3 overflow-hidden"
                         >
-                            <ApplicationLogo className="h-8 w-8 shrink-0 fill-current text-indigo-600 dark:text-indigo-400" />
+                            <ApplicationLogo className="h-8 w-8 shrink-0 fill-current text-[#DA4167] dark:text-[#F0BCD4]" />
                             {!isCollapsed && (
-                                <span className="font-bold text-lg text-gray-800 dark:text-white tracking-wide truncate">
-                                    Warehouse
+                                <span className="font-bold text-lg text-[#1F0322] dark:text-white tracking-wide truncate">
+                                    Tsubang
                                 </span>
                             )}
                         </Link>
@@ -96,39 +123,40 @@ export default function AuthenticatedLayout({ header, children }) {
 
                     {/* Area Navigasi Utama */}
                     <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-1 custom-scrollbar">
-                        {navigation_menus && navigation_menus.length > 0
-                            ? navigation_menus.map((menu) => (
-                                  <SidebarItem
-                                      key={menu.id}
-                                      item={menu}
-                                      isCollapsed={isCollapsed}
-                                  />
-                              ))
-                            : !isCollapsed && (
-                                  <div className="px-3 py-2 text-xs text-gray-400">
-                                    <li>
+                        {navigation_menus && navigation_menus.length > 0 ? (
+                            navigation_menus.map((menu) => (
+                                <SidebarItem
+                                    key={menu.id}
+                                    item={menu}
+                                    isCollapsed={isCollapsed}
+                                />
+                            ))
+                        ) : (
+                            !isCollapsed && (
+                                <div className="px-3 py-2 text-xs text-gray-400 space-y-1">
+                                    <div>
                                         <NavLink
                                             href={route('dashboard')}
                                             active={route().current('dashboard')}
                                         >
                                             Dashboard
                                         </NavLink>
-                                    </li>
-                                    <li>
+                                    </div>
+                                    <div>
                                         <NavLink
                                             href={route('cpanel')}
                                             active={route().current('cpanel')}
                                         >
                                             Control Panel
                                         </NavLink>
-                                    </li>
-                                  </div>
-                              )}
+                                    </div>
+                                </div>
+                            )
+                        )}
                     </nav>
                 </div>
 
                 {/* Bottom Card Profile & Theme Switcher */}
-                {/* Note: overflow-visible agar Dropdown yang membuka ke atas tidak terpotong */}
                 <div className="p-3 border-t border-gray-100 dark:border-gray-700/50 bg-gray-50/50 dark:bg-gray-800/50 rounded-b-2xl relative overflow-visible">
                     <div className="flex items-center justify-between gap-1">
                         {/* Custom Dropdown Profil (Membuka ke Atas) */}
@@ -136,7 +164,7 @@ export default function AuthenticatedLayout({ header, children }) {
                             <Dropdown>
                                 <Dropdown.Trigger>
                                     <button className="flex items-center gap-3 w-full text-left p-1.5 rounded-xl hover:bg-gray-200/50 dark:hover:bg-gray-700/50 transition">
-                                        <div className="w-8 h-8 rounded-full bg-indigo-500 text-white flex shrink-0 items-center justify-center font-bold text-sm shadow">
+                                        <div className="w-8 h-8 rounded-full bg-[#DA4167] text-white flex shrink-0 items-center justify-center font-bold text-sm shadow">
                                             {user.name.charAt(0).toUpperCase()}
                                         </div>
                                         {!isCollapsed && (
@@ -152,14 +180,16 @@ export default function AuthenticatedLayout({ header, children }) {
                                     </button>
                                 </Dropdown.Trigger>
 
-                                {/* Dropdown Content diposisikan melayang ke atas (bottom-full mb-2) */}
                                 <Dropdown.Content
-                                    align={isCollapsed ? "left" : "left"}
+                                    align="left"
                                     width="48"
                                     contentClasses="py-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-2xl rounded-xl absolute bottom-full mb-2 z-50"
                                 >
                                     <Dropdown.Link href={route("profile.edit")}>
                                         Profile
+                                    </Dropdown.Link>
+                                    <Dropdown.Link href={route("cpanel")}>
+                                        Control Panel
                                     </Dropdown.Link>
                                     <Dropdown.Link
                                         href={route("logout")}
@@ -181,9 +211,9 @@ export default function AuthenticatedLayout({ header, children }) {
                                 className="p-2 rounded-xl text-gray-500 hover:bg-gray-200/60 dark:text-gray-400 dark:hover:bg-gray-700/60 transition shrink-0"
                             >
                                 {darkMode ? (
-                                    <i class="fa-solid fa-sun h-5 w-5 text-amber-400"></i>
+                                    <i className="fa-solid fa-sun h-5 w-5 text-amber-400 flex items-center justify-center"></i>
                                 ) : (
-                                    <i class="fa-solid fa-moon h-5 w-5 text-indigo-500"></i>
+                                    <i className="fa-solid fa-moon h-5 w-5 text-[#DA4167] flex items-center justify-center"></i>
                                 )}
                             </button>
                         )}
@@ -200,9 +230,9 @@ export default function AuthenticatedLayout({ header, children }) {
                 {/* Mobile Top App Bar */}
                 <header className="lg:hidden flex items-center justify-between bg-white/80 dark:bg-gray-800/80 backdrop-blur px-4 py-3 m-4 mb-0 rounded-2xl shadow-sm border border-gray-200/50 dark:border-gray-700/50">
                     <div className="flex items-center gap-3">
-                        <ApplicationLogo className="h-7 w-7 fill-current text-indigo-600 dark:text-indigo-400" />
+                        <ApplicationLogo className="h-7 w-7 fill-current text-[#DA4167] dark:text-[#F0BCD4]" />
                         <span className="font-semibold text-gray-700 dark:text-gray-200">
-                            AppName
+                            Tsubang
                         </span>
                     </div>
 
@@ -212,9 +242,9 @@ export default function AuthenticatedLayout({ header, children }) {
                         className="p-2 rounded-xl text-gray-500 dark:text-gray-400"
                     >
                         {darkMode ? (
-                            <i class="fa-solid fa-sun h-5 w-5 text-amber-400"></i>
+                            <i className="fa-solid fa-sun h-5 w-5 text-amber-400 flex items-center justify-center"></i>
                         ) : (
-                            <i class="fa-solid fa-moon h-5 w-5 text-indigo-500"></i>
+                            <i className="fa-solid fa-moon h-5 w-5 text-[#DA4167] flex items-center justify-center"></i>
                         )}
                     </button>
                 </header>
@@ -241,25 +271,9 @@ export default function AuthenticatedLayout({ header, children }) {
                         <Link
                             key={menu.id}
                             href={menu.url || "#"}
-                            className="flex flex-col items-center gap-1 text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 p-1"
+                            className="flex flex-col items-center gap-1 text-gray-600 dark:text-gray-400 hover:text-[#DA4167] dark:hover:text-[#F0BCD4] p-1"
                         >
-                            {menu.icon ? (
-                                <span className="text-xl">{menu.icon}</span>
-                            ) : (
-                                <svg
-                                    className="w-5 h-5"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M4 6h16M4 12h16M4 18h16"
-                                    />
-                                </svg>
-                            )}
+                            {renderMobileIcon(menu.icon)}
                             <span className="text-[10px] font-medium tracking-tight truncate max-w-[60px]">
                                 {menu.title}
                             </span>
@@ -271,7 +285,7 @@ export default function AuthenticatedLayout({ header, children }) {
                     <Dropdown>
                         <Dropdown.Trigger>
                             <button className="flex flex-col items-center gap-1 p-1">
-                                <div className="w-6 h-6 rounded-full bg-indigo-500 text-white flex items-center justify-center font-bold text-xs shadow">
+                                <div className="w-6 h-6 rounded-full bg-[#DA4167] text-white flex items-center justify-center font-bold text-xs shadow">
                                     {user.name.charAt(0).toUpperCase()}
                                 </div>
                                 <span className="text-[10px] font-medium text-gray-600 dark:text-gray-400">
@@ -286,6 +300,9 @@ export default function AuthenticatedLayout({ header, children }) {
                         >
                             <Dropdown.Link href={route("profile.edit")}>
                                 Profile
+                            </Dropdown.Link>
+                            <Dropdown.Link href={route("cpanel")}>
+                                Control Panel
                             </Dropdown.Link>
                             <Dropdown.Link
                                 href={route("logout")}

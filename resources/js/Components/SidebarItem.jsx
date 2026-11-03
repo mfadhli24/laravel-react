@@ -18,6 +18,27 @@ export default function SidebarItem({ item }) {
     // State open otomatis true jika salah satu child menu sedang aktif
     const [isOpen, setIsOpen] = useState(isParentActive);
 
+    // Helper untuk merender ikon (FontAwesome class atau String biasa)
+    const renderIcon = (iconClass, activeState) => {
+        if (!iconClass) return null;
+        
+        // Jika string diawali 'fa-', render sebagai tag <i> FontAwesome
+        if (typeof iconClass === 'string' && iconClass.includes('fa-')) {
+            return (
+                <i className={`${iconClass} text-base w-5 text-center transition-all ${
+                    activeState ? 'text-white' : 'text-gray-500 dark:text-gray-400 group-hover:text-[#DA4167]'
+                }`}></i>
+            );
+        }
+
+        // Render langsung jika berisi emoji / komponen lain
+        return (
+            <span className={`text-lg leading-none ${activeState ? 'text-white' : 'opacity-80 group-hover:opacity-100'}`}>
+                {iconClass}
+            </span>
+        );
+    };
+
     // --- RENDER MENU YANG MEMILIKI SUB-MENU (PARENT) ---
     if (hasChildren) {
         return (
@@ -27,17 +48,12 @@ export default function SidebarItem({ item }) {
                     onClick={() => setIsOpen(!isOpen)}
                     className={`flex items-center justify-between w-full px-3.5 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 group ${
                         isParentActive
-                            ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50/60 dark:bg-indigo-950/40'
+                            ? 'text-[#DA4167] dark:text-[#F0BCD4] bg-[#DA4167]/10 dark:bg-[#DA4167]/20 font-semibold'
                             : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-700/50 hover:text-gray-900 dark:hover:text-gray-100'
                     }`}
                 >
                     <div className="flex items-center gap-3 truncate">
-                        {/* Render Ikon opsional jika ada di data */}
-                        {item.icon && (
-                            <span className="text-lg leading-none opacity-80 group-hover:opacity-100">
-                                {item.icon}
-                            </span>
-                        )}
+                        {renderIcon(item.icon, isParentActive)}
                         <span className="truncate tracking-wide">{item.title}</span>
                     </div>
 
@@ -56,7 +72,7 @@ export default function SidebarItem({ item }) {
 
                 {/* Sub-menu Container (Rekursif) */}
                 {isOpen && (
-                    <div className="mt-1 ml-4 pl-3 space-y-1 border-l-2 border-gray-200/60 dark:border-gray-700/60 transition-all">
+                    <div className="mt-1 ml-4 pl-3 space-y-1 border-l-2 border-[#F0BCD4]/40 dark:border-gray-700/60 transition-all">
                         {item.children.map((child) => (
                             <SidebarItem key={child.id} item={child} />
                         ))}
@@ -72,15 +88,11 @@ export default function SidebarItem({ item }) {
             href={item.url || '#'}
             className={`flex items-center gap-3 px-3.5 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 group ${
                 isActive
-                    ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/20 dark:bg-indigo-500 dark:text-white'
+                    ? 'bg-[#DA4167] text-white shadow-md shadow-[#DA4167]/25 dark:bg-[#DA4167] dark:text-white font-semibold'
                     : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-700/50 hover:text-gray-900 dark:hover:text-gray-100'
             }`}
         >
-            {item.icon && (
-                <span className={`text-lg leading-none ${isActive ? 'text-white' : 'opacity-80 group-hover:opacity-100'}`}>
-                    {item.icon}
-                </span>
-            )}
+            {renderIcon(item.icon, isActive)}
             <span className="truncate tracking-wide">{item.title}</span>
         </Link>
     );

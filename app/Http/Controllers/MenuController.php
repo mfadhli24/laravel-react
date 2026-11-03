@@ -15,16 +15,24 @@ use Illuminate\Support\Str;
 
 class MenuController extends Controller
 {
-    public function create(MenuRequest $request): RedirectResponse
+    public function create(): Response
+    {
+        return Inertia::render('Cpanel');
+    }
+
+    public function store(MenuRequest $request): RedirectResponse
     {
         $data = $request->validated();
         if (empty($data['url'])) {
             $data['url'] = Str::url($data['title']);
         }
 
+            // Pastikan boolean aman
+        $data['is_active'] = $request->boolean('is_active');
+
         Menu::create($data);
 
-        return Redirect::route('dashboard')->with('success', 'Yeay!');
+        return redirect()->route('dashboard')->with('success', 'Menu berhasil ditambahkan!');
         // return redirect()->route('cpanel')
         //     ->with('success', 'Menu berhasil ditambahkan.');
     }
