@@ -1,3 +1,13 @@
+{
+    "compilerOptions": {
+        "jsx": "react-jsx",
+        "paths": {
+            "@/": ["./resources/js/"]
+        }
+    },
+    "exclude": ["node_modules", "public"]
+}
+
 // {
 //     "compilerOptions": {
 //         "baseUrl": ".",
@@ -8,13 +18,3 @@
 //     },
 //     "exclude": ["node_modules", "public"]
 // }
-
-{
-    "compilerOptions": {
-        "jsx": "react-jsx",
-        "paths": {
-            "@/*": ["./resources/js/*"]
-        }
-    },
-    "exclude": ["node_modules", "public"]
-}

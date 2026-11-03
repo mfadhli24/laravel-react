@@ -1,8 +1,9 @@
-import ApplicationLogo from '@/Components/ApplicationLogo';
-import Dropdown from '@/Components/Dropdown';
-import SidebarItem from '@/Components/SidebarItem';
-import { Link, usePage } from '@inertiajs/react';
-import { useEffect, useState } from 'react';
+import ApplicationLogo from "@/Components/ApplicationLogo";
+import Dropdown from "@/Components/Dropdown";
+import SidebarItem from "@/Components/SidebarItem";
+import { Link, usePage } from "@inertiajs/react";
+import { useEffect, useState } from "react";
+import NavLink from "../Components/NavLink";
 
 export default function AuthenticatedLayout({ header, children }) {
     const { auth, navigation_menus } = usePage().props;
@@ -14,11 +15,11 @@ export default function AuthenticatedLayout({ header, children }) {
 
     // State & Efek Dark Mode
     const [darkMode, setDarkMode] = useState(() => {
-        if (typeof window !== 'undefined') {
+        if (typeof window !== "undefined") {
             return (
-                localStorage.getItem('theme') === 'dark' ||
-                (!('theme' in localStorage) &&
-                    window.matchMedia('(prefers-color-scheme: dark)').matches)
+                localStorage.getItem("theme") === "dark" ||
+                (!("theme" in localStorage) &&
+                    window.matchMedia("(prefers-color-scheme: dark)").matches)
             );
         }
         return false;
@@ -26,11 +27,11 @@ export default function AuthenticatedLayout({ header, children }) {
 
     useEffect(() => {
         if (darkMode) {
-            document.documentElement.classList.add('dark');
-            localStorage.setItem('theme', 'dark');
+            document.documentElement.classList.add("dark");
+            localStorage.setItem("theme", "dark");
         } else {
-            document.documentElement.classList.remove('dark');
-            localStorage.setItem('theme', 'light');
+            document.documentElement.classList.remove("dark");
+            localStorage.setItem("theme", "light");
         }
     }, [darkMode]);
 
@@ -40,7 +41,7 @@ export default function AuthenticatedLayout({ header, children }) {
         <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-200 flex flex-col lg:flex-row text-gray-800 dark:text-gray-200">
             {/* Backdrop Overlay untuk Mobile (Sidebar Slide View) */}
             {showingSidebar && (
-                <div 
+                <div
                     onClick={() => setShowingSidebar(false)}
                     className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm lg:hidden"
                 />
@@ -49,46 +50,80 @@ export default function AuthenticatedLayout({ header, children }) {
             {/* FLOATING SIDEBAR (Desktop) */}
             <aside
                 className={`hidden lg:flex fixed top-4 bottom-4 left-4 z-40 bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-2xl shadow-xl border border-gray-200/50 dark:border-gray-700/50 flex-col justify-between transition-all duration-300 ${
-                    isCollapsed ? 'w-20' : 'w-64'
+                    isCollapsed ? "w-20" : "w-64"
                 }`}
             >
                 <div className="flex flex-col h-full overflow-hidden">
                     {/* Header Logo & Toggle Minimize */}
                     <div className="flex items-center justify-between px-4 py-5 border-b border-gray-100 dark:border-gray-700/50">
-                        <Link href="/" className="flex items-center gap-3 overflow-hidden">
+                        <Link
+                            href="/"
+                            className="flex items-center gap-3 overflow-hidden"
+                        >
                             <ApplicationLogo className="h-8 w-8 shrink-0 fill-current text-indigo-600 dark:text-indigo-400" />
                             {!isCollapsed && (
                                 <span className="font-bold text-lg text-gray-800 dark:text-white tracking-wide truncate">
-                                    AppName
+                                    Warehouse
                                 </span>
                             )}
                         </Link>
-                        
+
                         {/* Tombol Toggle Minimize Sidebar */}
                         <button
                             onClick={() => setIsCollapsed(!isCollapsed)}
                             className="p-1.5 rounded-lg text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-600 dark:hover:text-gray-200 transition"
-                            title={isCollapsed ? "Perbesar Sidebar" : "Kecilkan Sidebar"}
+                            title={
+                                isCollapsed
+                                    ? "Perbesar Sidebar"
+                                    : "Kecilkan Sidebar"
+                            }
                         >
-                            <svg className={`h-5 w-5 transform transition-transform duration-300 ${isCollapsed ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+                            <svg
+                                className={`h-5 w-5 transform transition-transform duration-300 ${isCollapsed ? "rotate-180" : ""}`}
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    d="M11 19l-7-7 7-7m8 14l-7-7 7-7"
+                                />
                             </svg>
                         </button>
                     </div>
 
                     {/* Area Navigasi Utama */}
                     <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-1 custom-scrollbar">
-                        {navigation_menus && navigation_menus.length > 0 ? (
-                            navigation_menus.map((menu) => (
-                                <SidebarItem key={menu.id} item={menu} isCollapsed={isCollapsed} />
-                            ))
-                        ) : (
-                            !isCollapsed && (
-                                <div className="px-3 py-2 text-xs text-gray-400">
-                                    Navigasi belum dikonfigurasi.
-                                </div>
-                            )
-                        )}
+                        {navigation_menus && navigation_menus.length > 0
+                            ? navigation_menus.map((menu) => (
+                                  <SidebarItem
+                                      key={menu.id}
+                                      item={menu}
+                                      isCollapsed={isCollapsed}
+                                  />
+                              ))
+                            : !isCollapsed && (
+                                  <div className="px-3 py-2 text-xs text-gray-400">
+                                    <li>
+                                        <NavLink
+                                            href={route('dashboard')}
+                                            active={route().current('dashboard')}
+                                        >
+                                            Dashboard
+                                        </NavLink>
+                                    </li>
+                                    <li>
+                                        <NavLink
+                                            href={route('cpanel')}
+                                            active={route().current('cpanel')}
+                                        >
+                                            Control Panel
+                                        </NavLink>
+                                    </li>
+                                  </div>
+                              )}
                     </nav>
                 </div>
 
@@ -118,15 +153,19 @@ export default function AuthenticatedLayout({ header, children }) {
                                 </Dropdown.Trigger>
 
                                 {/* Dropdown Content diposisikan melayang ke atas (bottom-full mb-2) */}
-                                <Dropdown.Content 
-                                    align={isCollapsed ? "left" : "left"} 
+                                <Dropdown.Content
+                                    align={isCollapsed ? "left" : "left"}
                                     width="48"
                                     contentClasses="py-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-2xl rounded-xl absolute bottom-full mb-2 z-50"
                                 >
-                                    <Dropdown.Link href={route('profile.edit')}>
+                                    <Dropdown.Link href={route("profile.edit")}>
                                         Profile
                                     </Dropdown.Link>
-                                    <Dropdown.Link href={route('logout')} method="post" as="button">
+                                    <Dropdown.Link
+                                        href={route("logout")}
+                                        method="post"
+                                        as="button"
+                                    >
                                         Log Out
                                     </Dropdown.Link>
                                 </Dropdown.Content>
@@ -142,13 +181,9 @@ export default function AuthenticatedLayout({ header, children }) {
                                 className="p-2 rounded-xl text-gray-500 hover:bg-gray-200/60 dark:text-gray-400 dark:hover:bg-gray-700/60 transition shrink-0"
                             >
                                 {darkMode ? (
-                                    <svg className="h-5 w-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                                    </svg>
+                                    <i class="fa-solid fa-sun h-5 w-5 text-amber-400"></i>
                                 ) : (
-                                    <svg className="h-5 w-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                                    </svg>
+                                    <i class="fa-solid fa-moon h-5 w-5 text-indigo-500"></i>
                                 )}
                             </button>
                         )}
@@ -157,9 +192,9 @@ export default function AuthenticatedLayout({ header, children }) {
             </aside>
 
             {/* MAIN CONTENT AREA */}
-            <div 
+            <div
                 className={`flex-1 flex flex-col transition-all duration-300 ${
-                    isCollapsed ? 'lg:pl-[6.5rem]' : 'lg:pl-[17.5rem]'
+                    isCollapsed ? "lg:pl-[6.5rem]" : "lg:pl-[17.5rem]"
                 } pb-20 lg:pb-0`}
             >
                 {/* Mobile Top App Bar */}
@@ -177,13 +212,9 @@ export default function AuthenticatedLayout({ header, children }) {
                         className="p-2 rounded-xl text-gray-500 dark:text-gray-400"
                     >
                         {darkMode ? (
-                            <svg className="h-5 w-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                            </svg>
+                            <i class="fa-solid fa-sun h-5 w-5 text-amber-400"></i>
                         ) : (
-                            <svg className="h-5 w-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                            </svg>
+                            <i class="fa-solid fa-moon h-5 w-5 text-indigo-500"></i>
                         )}
                     </button>
                 </header>
@@ -199,32 +230,41 @@ export default function AuthenticatedLayout({ header, children }) {
 
                 {/* Page Content Body */}
                 <main className="flex-1 p-6">
-                    <div className="mx-auto max-w-7xl">
-                        {children}
-                    </div>
+                    <div className="mx-auto max-w-7xl">{children}</div>
                 </main>
             </div>
 
             {/* FLOATING BOTTOM NAVIGATION BAR (Khusus Mobile Layout) */}
             <div className="lg:hidden fixed bottom-3 left-4 right-4 z-50 bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-2xl shadow-2xl border border-gray-200/60 dark:border-gray-700/60 px-4 py-2 flex items-center justify-around">
-                {navigation_menus && navigation_menus.slice(0, 4).map((menu) => (
-                    <Link
-                        key={menu.id}
-                        href={menu.url || '#'}
-                        className="flex flex-col items-center gap-1 text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 p-1"
-                    >
-                        {menu.icon ? (
-                            <span className="text-xl">{menu.icon}</span>
-                        ) : (
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
-                            </svg>
-                        )}
-                        <span className="text-[10px] font-medium tracking-tight truncate max-w-[60px]">
-                            {menu.title}
-                        </span>
-                    </Link>
-                ))}
+                {navigation_menus &&
+                    navigation_menus.slice(0, 4).map((menu) => (
+                        <Link
+                            key={menu.id}
+                            href={menu.url || "#"}
+                            className="flex flex-col items-center gap-1 text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 p-1"
+                        >
+                            {menu.icon ? (
+                                <span className="text-xl">{menu.icon}</span>
+                            ) : (
+                                <svg
+                                    className="w-5 h-5"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        d="M4 6h16M4 12h16M4 18h16"
+                                    />
+                                </svg>
+                            )}
+                            <span className="text-[10px] font-medium tracking-tight truncate max-w-[60px]">
+                                {menu.title}
+                            </span>
+                        </Link>
+                    ))}
 
                 {/* Profile Avatar Button / Trigger Dropdown Mobile */}
                 <div className="relative">
@@ -239,15 +279,19 @@ export default function AuthenticatedLayout({ header, children }) {
                                 </span>
                             </button>
                         </Dropdown.Trigger>
-                        <Dropdown.Content 
-                            align="right" 
+                        <Dropdown.Content
+                            align="right"
                             width="48"
                             contentClasses="py-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-2xl rounded-xl absolute bottom-full mb-3 right-0 z-50"
                         >
-                            <Dropdown.Link href={route('profile.edit')}>
+                            <Dropdown.Link href={route("profile.edit")}>
                                 Profile
                             </Dropdown.Link>
-                            <Dropdown.Link href={route('logout')} method="post" as="button">
+                            <Dropdown.Link
+                                href={route("logout")}
+                                method="post"
+                                as="button"
+                            >
                                 Log Out
                             </Dropdown.Link>
                         </Dropdown.Content>

@@ -7,12 +7,13 @@
         "dev": "vite"
     },
     "devDependencies": {
+        "@fortawesome/fontawesome-free": "^7.3.1",
         "@headlessui/react": "^2.0.0",
         "@inertiajs/react": "^2.0.0",
         "@tailwindcss/forms": "^0.5.3",
         "@tailwindcss/vite": "^4.3.3",
         "@vitejs/plugin-react": "^4.2.0",
-        "autoprefixer": "^10.6.2",
+        "autoprefixer": "^10.4.12",
         "concurrently": "^10.0.3",
         "laravel-vite-plugin": "^3.1",
         "postcss": "^8.4.31",

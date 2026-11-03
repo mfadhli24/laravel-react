@@ -6,8 +6,15 @@ export default defineConfig({
     plugins: [
         laravel({
             input: 'resources/js/app.jsx',
+            'resources/css/app.css',
             refresh: true,
         }),
         react(),
     ],
+
+    resolve: {
+        alias: {
+            '~fa': path.resolve(__dirname, 'node_modules/@fortawesome/fontawesome-free/scss'),
+        }
+    },
 });
