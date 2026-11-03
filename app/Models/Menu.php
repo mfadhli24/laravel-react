@@ -1,10 +1,13 @@
 <?php
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Menu extends Model
 {
+    use HasFactory;
+    
     protected $fillable = ['parent_id', 'title', 'url', 'icon', 'order', 'is_active'];
 
     // Relasi ke anak (children) - Rekursif
